@@ -3,60 +3,133 @@
 All notable changes to YtypGrouper will be documented in this file.
 
 ---
+## [0.1.0] — 2026-01-19 — Py Initial Release
 
-## [0.1.0] — 2025-07-18 — Initial Release
+## [1.0] — 2026-07-18 — New Release
 
-### Overview
-YtypGrouper is a standalone C#/Avalonia tool that sorts GTA V YMAP and YTYP entity lists by their **source `.ytyp` file**, rather than alphabetically by archetype name. It resolves every archetype to its origin YTYP (vanilla or mod) via a full `GameFileCache` scan, then reorders the `<Item>` entries accordingly — preserving the complete file structure including MLO room/portal `attachedObjects` remapping.
-
+# YtypGrouper
+ 
+> A standalone Windows tool that sorts GTA V YMAP and YTYP entity lists by their source `.ytyp` file — vanilla or mod.
+ 
+![YtypGrouper UI](https://i.imgur.com/zytAB4p.png)
+ 
 ---
-
-### Added
-
-#### Core
-- **YTYP-based sorting** — entities are grouped and ordered alphabetically by the name of their source `.ytyp` file (vanilla or mod), instead of alphabetically by `archetypeName`.
-- **MLO support** — full MLO entity sorting with automatic `attachedObjects` remapping in `rooms` and `portals` after reordering, matching the index changes exactly.
-- **Internal MLO props label** — entities whose archetype is defined in the same YTYP as the MLO itself are tagged `(internal)` in the result summary.
-- **Unresolved entities** — archetypes that cannot be resolved in the GameFileCache (missing mod, unknown hash) are placed at the end of the entity list under `(unresolved)`.
-- **Sort summary** — after each operation, the UI displays a breakdown: entity count per source YTYP group, output path, and unresolved count with a warning.
-
-#### File format support
-- **CodeWalker XML export** (`.ymap.xml` / `.ytyp.xml`) — reads and writes XML with indented formatting, `UTF-8` without BOM.
-- **Binary `.ymap`** — loads raw binary YMAP via `YmapFile.Load(byte[])`, sorts `AllEntities` in place, and re-exports binary via `YmapFile.Save()`.
-- **Binary `.ytyp`** — loads raw binary YTYP via `YtypFile.Load(byte[])`, sorts MLO entities in place, and re-exports binary via `YtypFile.Save()`.
-
-#### GameFileCache integration
-- Full GTA V game cache loading (vanilla + optional mods) via `CodeWalker.Core` — same pattern as TexturesTesting.
-- Configurable DLC string (`mp2024_01_g9ec`), mods folder exclusions (`Installers;_CommonRedist`).
-- Audio, vehicle and ped loading disabled for faster cache init.
-- GTA V path and output directory persisted in `config.ini` next to the executable and restored on next launch.
-
-#### UI
-- **GTA V path picker** — loads and caches the game path; asks once whether to enable the mods folder via a styled in-theme dialog.
-- **Output folder picker** — user chooses the export destination at runtime (no longer forced to an `export/` subfolder next to the executable); path is saved and restored.
-- **File type filter** — picker offers four options: all supported files, YMAP binary, YTYP binary, CodeWalker XML.
-- **Dark red/orange theme** — custom Avalonia styles with `#E05020` / `#FF6633` accent, `#140E0E` background, `#AA8880` secondary text.
-- **Segoe UI typography** — matches CodeWalker's system font stack (`Segoe UI, Tahoma, Arial`); result console uses `Consolas` for technical output.
-- **Custom confirm dialog** — "Enable mods?" prompt is a native Avalonia window that respects the app's design language (no third-party MessageBox theme bleed).
-- **Logo slot** — `ApplicationIcon` line present and commented in `.csproj`; drop `logo.ico` next to the `.csproj` and uncomment to activate.
-- `x64` platform target enforced in both Debug and Release configurations to match `CodeWalker.Core.dll` (AMD64).
-
+ 
+## What is it?
+ 
+When building MLOs or working with YMAPs that reference props from multiple packs, your entity list quickly becomes a mix of vanilla props, mod props, and interior-specific archetypes — all unsorted.
+ 
+**YtypGrouper** resolves each entity's `archetypeName` back to the `.ytyp` file that defines it (by scanning the full GTA V game cache, vanilla + mods), then reorders the entity list so that:
+ 
+- All entities from the same `.ytyp` source are grouped together
+- Groups are sorted alphabetically by source YTYP filename
+- Within a group, entities are sorted alphabetically by `archetypeName`
+- Unresolved archetypes (missing mod, unknown hash) are placed at the end
+For **MLOs**, the tool also automatically remaps `attachedObjects` indices in `rooms` and `portals` after reordering — your interior stays fully functional.
+ 
 ---
-
-### Dependencies
-| Package | Version |
-|---|---|
-| Avalonia | 11.1.3 |
-| Semi.Avalonia | 11.1.0.3 |
-| CodeWalker.Core | 1.0.3 |
-| MessageBox.Avalonia | 3.1.6 |
-| Costura.Fody | 5.7.0 |
-| Salaros.ConfigParser | 0.3.8 |
-| Microsoft.Extensions.Logging | 8.0.0 |
-
+ 
+## Features
+ 
+- Sorts by **source YTYP** (not just alphabetically by archetype name)
+- Full **MLO support** with `attachedObjects` remapping in rooms and portals
+- Supports raw binary **`.ymap`** and **`.ytyp`** directly — no CodeWalker XML export required
+- Also supports **CodeWalker XML exports** (`.ymap.xml` / `.ytyp.xml`)
+- Binary in → binary out / XML in → XML out
+- Resolves archetypes from **vanilla + mods** via full GameFileCache scan
+- Internal MLO props labelled `(internal)` in the result summary
+- Output folder chosen freely at runtime, path saved between sessions
+- GTA V path saved automatically on first setup
 ---
-
-### Known limitations
-- Binary `.ymap` export re-serialises all entities via `BuildCEntityDefs()` — LOD hierarchy links (`Parent`, `Children`) are preserved in memory but callers should verify in-game if the YMAP contains complex LOD chains.
-- Archetypes from mods installed outside the standard GTA V `mods/` folder structure will appear as `(unresolved)` unless the mod path is included in the game cache scan.
-- The app must be run as **x64** — the `CodeWalker.Core` NuGet package targets AMD64 only.
+ 
+## Requirements
+ 
+- Windows x64
+- GTA V installation
+- [.NET 8 Runtime](https://dotnet.microsoft.com/download/dotnet/8.0)
+---
+ 
+## How to use
+ 
+**1. First launch — set your GTA V path**
+ 
+Go to **File → Select GTA V Path** and point to your GTA V folder (the one containing `GTA5.exe`).
+ 
+**2. Enable mods (optional)**
+ 
+A prompt will ask whether to include your `mods/` folder. Say **Yes** if you want mod archetypes to be resolved — required if your YMAP or YTYP references props from installed mods.
+ 
+**3. Wait for cache load**
+ 
+YtypGrouper scans all RPF archives to build a complete archetype index. This can take a minute depending on your installation size and number of mods. The status bar at the bottom shows progress.
+ 
+**4. Choose your output folder**
+ 
+Click **Choose folder…** to pick where sorted files will be saved. This is remembered between sessions.
+ 
+**5. Open and sort**
+ 
+Click **Open File to Sort** and pick your file:
+ 
+| Format | Input | Output |
+|---|---|---|
+| Binary YMAP | `.ymap` | `.ymap` (sorted) |
+| Binary YTYP | `.ytyp` | `.ytyp` (sorted) |
+| CodeWalker XML | `.ymap.xml` / `.ytyp.xml` | `.xml` (sorted) |
+ 
+The result panel shows a breakdown of entity counts per source YTYP and flags any unresolved archetypes.
+ 
+---
+ 
+## Adding your own icon
+ 
+In `YtypGrouper/YtypGrouper.csproj`, find the commented line:
+ 
+```xml
+<!-- <ApplicationIcon>logo.ico</ApplicationIcon> -->
+```
+ 
+Place your `logo.ico` file in the same folder as the `.csproj`, uncomment the line, and rebuild.
+ 
+---
+ 
+## Building from source
+ 
+```bash
+git clone https://github.com/sovietkermit/YtypGrouper.git
+cd YtypGrouper
+dotnet build -c Release
+```
+ 
+Requires [.NET 8 SDK](https://dotnet.microsoft.com/download/dotnet/8.0).
+ 
+---
+ 
+## Dependencies
+ 
+| Package | Version | License |
+|---|---|---|
+| [CodeWalker.Core](https://www.nuget.org/packages/CodeWalker.Core) | 1.0.3 | MIT |
+| [Avalonia](https://avaloniaui.net) | 11.1.3 | MIT |
+| [Semi.Avalonia](https://github.com/irihitech/Semi.Avalonia) | 11.1.0.3 | MIT |
+| [MessageBox.Avalonia](https://github.com/AvaloniaCommunity/MessageBox.Avalonia) | 3.1.6 | MIT |
+| [Costura.Fody](https://github.com/Fody/Costura) | 5.7.0 | MIT |
+| [Salaros.ConfigParser](https://github.com/salaros/config-parser) | 0.3.8 | MIT |
+ 
+---
+ 
+## Credits
+ 
+**Author**
+- [sovietkermit](https://github.com/sovietkermit)
+**Inspirations & references**
+- [Hancapo](https://github.com/Hancapo) — [TexturesTesting](https://github.com/Hancapo/TexturesTesting), which provided the GameFileCache integration pattern and the archetype-to-asset resolution approach this tool builds on
+- [dexyfex](https://github.com/dexyfex) — [CodeWalker](https://github.com/dexyfex/CodeWalker), the foundation for all GTA V file parsing (`YmapFile`, `YtypFile`, `GameFileCache`, `MloArchetype`, archetype resolution)
+**Libraries**
+- [Avalonia UI](https://avaloniaui.net) — cross-platform UI framework
+- [Semi.Avalonia](https://github.com/irihitech/Semi.Avalonia) — UI theme
+---
+ 
+## License
+ 
+MIT — see [LICENSE](LICENSE) for details.
