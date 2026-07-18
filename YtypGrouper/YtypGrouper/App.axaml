@@ -1,0 +1,12 @@
+<Application xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             x:Class="YtypGrouper.App"
+             RequestedThemeVariant="Dark"
+             xmlns:semi="https://irihi.tech/semi">
+    <Application.Styles>
+        <semi:SemiTheme />
+    </Application.Styles>
+    <Application.Resources>
+        <FontFamily x:Key="AppFont">Segoe UI,Tahoma,Arial</FontFamily>
+    </Application.Resources>
+</Application>

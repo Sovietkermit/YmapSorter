@@ -1,0 +1,61 @@
+<Window xmlns="https://github.com/avaloniaui"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        x:Class="YtypGrouper.ConfirmDialog"
+        Width="360" SizeToContent="Height"
+        CanResize="False"
+        WindowStartupLocation="CenterOwner"
+        Background="#140E0E"
+        FontFamily="Segoe UI,Tahoma,Arial">
+
+    <Window.Styles>
+        <Style Selector="Button.accent">
+            <Setter Property="Background"      Value="#E05020"/>
+            <Setter Property="Foreground"      Value="White"/>
+            <Setter Property="BorderBrush"     Value="#FF6633"/>
+            <Setter Property="BorderThickness" Value="1"/>
+            <Setter Property="CornerRadius"    Value="4"/>
+            <Setter Property="FontFamily"      Value="Segoe UI,Tahoma,Arial"/>
+        </Style>
+        <Style Selector="Button.accent:pointerover /template/ ContentPresenter">
+            <Setter Property="Background" Value="#FF6633"/>
+        </Style>
+        <Style Selector="Button.secondary">
+            <Setter Property="Background"      Value="#2A1A1A"/>
+            <Setter Property="Foreground"      Value="#CC8866"/>
+            <Setter Property="BorderBrush"     Value="#5A2A1A"/>
+            <Setter Property="BorderThickness" Value="1"/>
+            <Setter Property="CornerRadius"    Value="4"/>
+            <Setter Property="FontFamily"      Value="Segoe UI,Tahoma,Arial"/>
+        </Style>
+        <Style Selector="Button.secondary:pointerover /template/ ContentPresenter">
+            <Setter Property="Background" Value="#3A2020"/>
+        </Style>
+    </Window.Styles>
+
+    <StackPanel Margin="24" Spacing="20">
+        <TextBlock x:Name="TbTitle"
+                   FontSize="14" FontWeight="Bold"
+                   Foreground="#E05020"
+                   FontFamily="Segoe UI,Tahoma,Arial"
+                   Text="Confirm"/>
+        <TextBlock x:Name="TbMessage"
+                   FontSize="12" TextWrapping="Wrap"
+                   Foreground="#CC9980"
+                   FontFamily="Segoe UI,Tahoma,Arial"
+                   Text=""/>
+        <StackPanel Orientation="Horizontal" HorizontalAlignment="Right" Spacing="10">
+            <Button x:Name="BtnNo"
+                    Classes="secondary"
+                    Width="90" Height="32"
+                    HorizontalContentAlignment="Center"
+                    Content="No"
+                    Click="BtnNo_Click"/>
+            <Button x:Name="BtnYes"
+                    Classes="accent"
+                    Width="90" Height="32"
+                    HorizontalContentAlignment="Center"
+                    Content="Yes"
+                    Click="BtnYes_Click"/>
+        </StackPanel>
+    </StackPanel>
+</Window>

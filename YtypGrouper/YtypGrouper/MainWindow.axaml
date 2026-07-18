@@ -1,0 +1,122 @@
+<Window xmlns="https://github.com/avaloniaui"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        mc:Ignorable="d" d:DesignWidth="640" d:DesignHeight="560"
+        MaxWidth="640" MaxHeight="560" CanResize="False"
+        x:Class="YtypGrouper.MainWindow"
+        WindowStartupLocation="CenterScreen"
+        FontFamily="Segoe UI,Tahoma,Arial"
+        Background="#140E0E"
+        Title="YtypGrouper">
+
+    <Window.Styles>
+        <Style Selector="Button.accent">
+            <Setter Property="Background"      Value="#E05020"/>
+            <Setter Property="Foreground"      Value="White"/>
+            <Setter Property="BorderBrush"     Value="#FF6633"/>
+            <Setter Property="BorderThickness" Value="1"/>
+            <Setter Property="CornerRadius"    Value="4"/>
+        </Style>
+        <Style Selector="Button.accent:pointerover /template/ ContentPresenter">
+            <Setter Property="Background" Value="#FF6633"/>
+        </Style>
+        <Style Selector="Button.accent:disabled /template/ ContentPresenter">
+            <Setter Property="Background" Value="#5A2010"/>
+            <Setter Property="TextElement.Foreground" Value="#884444"/>
+        </Style>
+        <Style Selector="Button.secondary">
+            <Setter Property="Background"      Value="#2A1A1A"/>
+            <Setter Property="Foreground"      Value="#CC8866"/>
+            <Setter Property="BorderBrush"     Value="#5A2A1A"/>
+            <Setter Property="BorderThickness" Value="1"/>
+            <Setter Property="CornerRadius"    Value="4"/>
+        </Style>
+        <Style Selector="Button.secondary:pointerover /template/ ContentPresenter">
+            <Setter Property="Background" Value="#3A2020"/>
+        </Style>
+    </Window.Styles>
+
+    <Grid RowDefinitions="Auto,*,Auto">
+
+        <!-- Menu bar -->
+        <Menu Grid.Row="0" Background="#2A1010">
+            <MenuItem Header="_File" Foreground="#CC8866">
+                <MenuItem x:Name="BtnGTAPath" Click="BtnGTAPath_OnClick"
+                          Header="_Select GTA V Path…"/>
+                <Separator/>
+                <MenuItem x:Name="MiExit" Click="MiExit_OnClick" Header="_Exit"/>
+            </MenuItem>
+        </Menu>
+
+        <!-- Main content -->
+        <StackPanel Grid.Row="1" Spacing="14" Margin="20">
+
+            <TextBlock Text="YtypGrouper"
+                       FontSize="22" FontWeight="Bold"
+                       Foreground="#E05020"
+                       HorizontalAlignment="Center"
+                       Margin="0,10,0,0"/>
+
+            <TextBlock TextAlignment="Center" TextWrapping="Wrap"
+                       Foreground="#AA8880" FontSize="11"
+                       Text="Sort YMAP / YTYP entities by their source .ytyp file (vanilla or mod).&#x0a;Accepts raw binary .ymap / .ytyp and CodeWalker XML exports."/>
+
+            <!-- Output folder row -->
+            <Border Background="#1E1212" BorderBrush="#3A2020"
+                    BorderThickness="1" CornerRadius="4" Padding="10,8">
+                <Grid ColumnDefinitions="*,Auto">
+                    <TextBlock x:Name="TbOutputDir"
+                               Grid.Column="0"
+                               VerticalAlignment="Center"
+                               Foreground="#AA8880" FontSize="11"
+                               Text="No output folder selected"
+                               TextTrimming="CharacterEllipsis"/>
+                    <Button x:Name="BtnPickOutput"
+                            Grid.Column="1"
+                            Click="BtnPickOutput_OnClick"
+                            Classes="secondary"
+                            Margin="10,0,0,0"
+                            Padding="12,4"
+                            Content="Choose folder…"/>
+                </Grid>
+            </Border>
+
+            <!-- Open file button -->
+            <Button x:Name="BtnPickFile" Click="BtnPickFile_OnClick"
+                    Classes="accent"
+                    Height="44" HorizontalAlignment="Stretch"
+                    HorizontalContentAlignment="Center"
+                    VerticalContentAlignment="Center"
+                    FontWeight="Bold" FontSize="13"
+                    Content="Open File to Sort  (.ymap / .ytyp / .xml)"
+                    IsEnabled="False"/>
+
+            <!-- Result box -->
+            <Border Background="#1E1212" BorderBrush="#3A2020"
+                    BorderThickness="1" CornerRadius="4"
+                    Padding="10" MinHeight="120" MaxHeight="220">
+                <ScrollViewer>
+                    <TextBlock x:Name="TbResult"
+                               TextWrapping="Wrap"
+                               FontFamily="Consolas,Courier New,monospace"
+                               FontSize="11"
+                               Foreground="#AA8880"
+                               Text="Load a GTA V path first via File menu."/>
+                </ScrollViewer>
+            </Border>
+
+        </StackPanel>
+
+        <!-- Status bar -->
+        <Border Grid.Row="2" Background="#1E0E0E"
+                BorderBrush="#3A2020" BorderThickness="0,1,0,0"
+                Padding="12,5">
+            <TextBlock x:Name="LabelCache"
+                       Foreground="#E05020" FontSize="11"
+                       HorizontalAlignment="Center"
+                       Text="Not loaded — select GTA V path via File menu"/>
+        </Border>
+
+    </Grid>
+</Window>
